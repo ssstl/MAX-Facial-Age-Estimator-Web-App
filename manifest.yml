@@ -1,0 +1,6 @@
+applications:
+- disk_quota: 256M
+  instances: 1
+  memory: 256M
+  name: MAX-Age-Estimation-Web-App
+  command: python app.py -port=$PORT -ml-endpoint=$ML_ENDPOINT
