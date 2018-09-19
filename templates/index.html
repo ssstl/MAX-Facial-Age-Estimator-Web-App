@@ -22,41 +22,47 @@
 
 </head>
 <body>
+    <div class="container-fluid ibm-code">
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-7">
                 <div id="codait-logo" class="col-md-3">
                     <img src="static/img/codait-logo.jpg"/>
                 </div>
                 <div class="col-md-4 title-section">
-                    <h1>IBM MAX</h1>
-                    <h1>Facial Age Estimator</h1>
+                    <h1>MAX Facial Age Estimator</h1>
+                    <button id="webcame" class="btn btn-primary select-buttons">Enable Webcam</button>
                 </div>
-            </div>
+                <div class="col-md-4">
+        <video style="display:none" autoplay></video>
+        <img src="{{ url_for('video_feed') }}" width="600" height="400">
+    </div>
+                            </div>
+
         </div>
 
-<section>
+<div class="row">
 
-<div>
-    <div class="col-md-3">
-        <button id="webcame"><font size="3" color="blue"><b>Webcam Streaming</b></button>
-        <video autoplay></video>
-        <h2>    </h2>
-        <img src="{{ url_for('video_feed') }}" width="600" height="400">
-        <p>Created at the IBM Center for Open-Source Data & AI Technologies</p>
-    </div>
+
+</div>
+
+    <footer class="footer">
+            <hr/>
+            <p style="float:left">Created at the IBM Center for Open-Source Data & AI Technologies</p>
+            <p style="float:right">
+                Source code available on
+                <a href="https://github.com/ihjhuo/MAX-Age-Estimation-Web-App" target="_blank">GitHub</a>
+            </p>
+    </footer>
 </div>
 
 
-</section>
+
+
+</body>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-<script src="{{ url_for('static', filename='js/webapp_video.js') }}?6.41"></script>
+<script src="{{ url_for('static', filename='js/webapp_video.js') }}?6.44"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
 <script>CFInstall.check({mode: 'overlay'});</script>
 
-<!--<footer class="footer">-->
-    <!--<hr/>-->
-    <!--<p>Created at the IBM Center for Open-Source Data & AI Technologies</p>-->
-<!--</footer>-->
-
-</body>
 </html>
