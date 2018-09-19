@@ -1,2 +1,6 @@
+Flask
+flask-socketio
+gevent
+Pillow
+numpy
 requests
-tornado

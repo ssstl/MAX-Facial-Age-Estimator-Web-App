@@ -1,4 +1,4 @@
-# Deploying the Image Caption Generator model to IBM Cloud
+# Deploying the Facial Age Estimator model to IBM Cloud
 
 1. Create a cluster using the [IBM Cloud Container Service](https://console.bluemix.net/containers-kubernetes/clusters
 ). For this Code Pattern we will only need to use the Free tier which gives us access to a Kubernetes cluster with 1 worker node.
@@ -12,24 +12,20 @@
 
 > Note: The IP address will not be displayed until the cluster is fully deployed.
 
-   ![Worker IP](doc/source/images/worker-public-ip.png)
 
 4. Click the `Kubernetes Dashboard` button to open the dashboard. Hit the `+ Create` button in the top right corner. Go to `Create an app`.
    Fill in the following fields:
    ```
     App name: <Select a name>
-    Container image: codait/max-image-caption-generator:latest
+    Container image: codait/max-facial-age-estimator:latest
     Number of pods: 1
     Service: External
     Port: 5000 | Target Port: 5000 | Protocol: TCP
    ```
    Then click `Deploy`
 
-   ![App Deployment](doc/source/images/app-deploy.png)
-
 5. In the sidebar, scroll down to `Services` under `Discovery and Load Balancing`. Click on the service that was created in the previous step. Under the `Internal endpoints`, make note of the port number that is within the range `30000` to `32676`. This port is the `NodePort`.
 
-   ![Node Port](doc/source/images/node-port.png)
 
 6. The MAX model should be accessible at `<Public IP>:<NodePort>`.
 

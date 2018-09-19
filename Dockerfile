@@ -14,11 +14,23 @@
 # limitations under the License.
 #
 
-FROM  python:alpine
+FROM python:2.7
+
+#opencv
+RUN apt-get update && apt-get install libgtk2.0 -y
+RUN pip install opencv-python
+
+#RUN apt-get update && \
+#    apt-get install -y \
+#    libgtk2.0-dev
 
 COPY . /app
 WORKDIR /app
-RUN pip install -r requirements.txt
 
-EXPOSE 8088
+RUN pip install -r requirements.txt
+EXPOSE 7000
 CMD python app.py
+
+
+
+

@@ -3,19 +3,19 @@
 # Create a web app to show the age estimation from the detected human faces
 
 The biological ages of people oftentimes provide a significant information for many applications; for example, surveillance, product recommendation, etc. 
-Existing commercial devices such as mobile phones, webcams are continuously creating visual data (images/videos). Given a visual data with human faces,
-the age estimation model predicts the ages of the detected faces. With the predicted ages, the information can be applied to different algorithms such as ``grouping'' which provides the observations in statistics --- different 
+Existing commercial devices such as mobile phones, webcams are used to create visual data (images/videos) constantly. Given visual data with human faces,
+the facial age estimator model predicts the ages of the detected faces. With the predicted ages, the information can be applied to different algorithms such as ``grouping'' which provides the observations in statistics --- different 
 groups of people for various activities.       
 
 
 In this Code Pattern we will use one of the models from the
 [Model Asset Exchange (MAX)](https://developer.ibm.com/code/exchanges/models/),
 an exchange where developers can find and experiment with open source deep learning
-models. Specifically we will be using the [Facial Age Estimator](https://github.com/IBM/MAX-Faical-Age-Estimator)
+models. Specifically we will be using the [Facial Age Estimator](https://github.com/IBM/MAX-Facial-Age-Estimator)
 to create a web application that will first detect human faces and then output the ages with the bounding boxes of the associated detected
 faces. 
 The web application provides an user-friendly interface
-backed by a lightweight python server using Tornado. The server takes webcam as input via the
+backed by a lightweight python server. The server takes webcam as input via the
 UI and sends them to a REST end point for the model. The model's REST endpoint is set up using the docker image
 provided on MAX. The Web UI displays the estimated age with the associated bounding box for each person.
 
@@ -23,7 +23,7 @@ When the reader has completed this Code Pattern, they will understand how to:
 
 * Build a Docker image of the Facial Age Estimator MAX Model
 * Deploy a deep learning model with a REST endpoint
-* Generate captions for an image using the MAX Model's REST API
+* Generate the estimated ages for an image using the MAX Model's REST API
 * Run a web application that using the model's REST API
 
 ![Architecture](doc/source/images/architecture.png)
@@ -78,19 +78,14 @@ If you already have a model API endpoint available you can skip this process.
 
 2. Click `Delivery Pipeline` and click the `Create +` button in the form to generate a `IBM Cloud API Key` for the web app.
 
-    ![Create API Key](doc/source/images/ibm-cloud-api-key.png)
 
 3. Once the API key is generated, the `Region`, `Organization`, and `Space` form sections will populate. Fill in the
 `Facial Age Estimator Model API Endpoint` section with the endpoint deployed above, then click on `Create`.
 
     > The format for this entry should be `http://170.0.0.1:5000`
 
-    ![Create App](doc/source/images/ibm-cloud-form.png)
-
 4. In Toolchains, click on `Delivery Pipeline` to watch while the app is deployed. Once deployed, the app can be
 viewed by clicking `View app`.
-
-    ![Delivery Pipeline](doc/source/images/ibm-cloud-deploy.png)
 
 ## Deploy on Kubernetes
 
@@ -121,8 +116,7 @@ The model will only be available internally, but can be accessed externally thro
 1. [Check out the code](#1-check-out-the-code)
 2. [Installing dependencies](#2-installing-dependencies)
 3. [Running the server](#3-running-the-server)
-4. [Configuring ports (Optional)](#4-configuring-ports-optional)
-5. [Instructions for Docker (Optional)](#5-instructions-for-docker-optional)
+4. [Instructions for Docker (Optional)](#4-instructions-for-docker-optional)
 
 ### Setting up the MAX Model
 
@@ -153,7 +147,7 @@ contains one image you can use to test out the API, or you can use your own.
 
 You can also test it on the command line, for example:
 
-    curl -F "image=@path/to/1.jpg" -X POST http://localhost:5000/model/predict
+    curl -F "image=@path/to/tom_cruise.jpg" -X POST http://localhost:5000/model/predict
 
 ```json
 {
@@ -205,14 +199,7 @@ Once it's finished processing the default images (< 1 minute) you can then acces
 
 The Facial Age Estimator endpoint must be available at `http://localhost:5000` for the web app to successfully start.
 
-#### 4. Configuring ports (Optional)
-
-If you want to use a different port or are running the ML endpoint at a different location
-you can change them with command-line options:
-
-    python app.py --port=[new port] --ml-endpoint=[endpoint url including protocol and port]
-
-#### 5. Instructions for Docker (Optional)
+#### 4. Instructions for Docker (Optional)
 
 To run the web app with Docker the containers running the web server and the REST endpoint need to share the same
 network stack. This is done in the following steps:
@@ -252,19 +239,6 @@ This will use the model docker container run above and can be run without clonin
 # Sample Output
 ![Web UI Screenshot](doc/source/images/myimage.png)
 --->
-
-
-# Troubleshooting
-
-There is a large amount of user uploaded images in a long running web app
-
-> When running the web app at `http://localhost:7000` an admin page is available at
-> [`http://localhost:7000/cleanup`](http://localhost:7000/cleanup) that allows the user to delete all user uploaded
-> files from the server.
->
-> [Note: This deletes **all** user uploaded images]
-
-![Admin UI Screenshot](doc/source/images/cleanup.png)
 
 # Links
 
