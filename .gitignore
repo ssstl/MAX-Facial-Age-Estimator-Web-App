@@ -11,3 +11,5 @@ __pycache__/
 # Web App
 static/img/images/MAX-*
 
+# temp files
+t1.jpg

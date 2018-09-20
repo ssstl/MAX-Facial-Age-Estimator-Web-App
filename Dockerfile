@@ -16,13 +16,8 @@
 
 FROM python:2.7
 
-#opencv
 RUN apt-get update && apt-get install libgtk2.0 -y
 RUN pip install opencv-python
-
-#RUN apt-get update && \
-#    apt-get install -y \
-#    libgtk2.0-dev
 
 COPY . /app
 WORKDIR /app

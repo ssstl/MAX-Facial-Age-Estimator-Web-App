@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: max-age-estimation-web-app
+  name: max-facial-age-estimatior-web-app
 spec:
   selector:
-    app: max-age-estimation-web-app
+    app: max-facial-age-estimatior-web-app
   ports:
   - port: 7000
   type: LoadBalancer
@@ -12,22 +12,22 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: max-age-estimation-web-app
+  name: max-facial-age-estimatior-web-app
   labels:
-    app: max-age-estimation-web-app
+    app: max-facial-age-estimatior-web-app
 spec:
   selector:
     matchLabels:
-      app: max-age-estimation-web-app
+      app: max-facial-age-estimatior-web-app
   replicas: 1
   template:
     metadata:
       labels:
-        app: max-age-estimation-web-app
+        app: max-facial-age-estimatior-web-app
     spec:
       containers:
-      - name: max-age-estimation-web-app
-        image: codait/max-age-estimation-web-app:latest
-        command: ["python", "app.py", "--ml-endpoint=http://MAX-Age-Estimation:5000"]
+      - name: max-facial-age-estimatior-web-app
+        image: codait/max-facial-age-estimatior-web-app:latest
+        command: ["python", "app.py", "--ml-endpoint=http://max-facial-age-estimatior:5000"]
         ports:
         - containerPort: 7000
