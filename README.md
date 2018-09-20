@@ -207,12 +207,7 @@ network stack. This is done in the following steps:
 Modify the command that runs the Facial Age Estimator REST endpoint to map an additional port in the container to a
 port on the host machine. In the example below it is mapped to port `7000` on the host but other ports can also be used.
 
-    docker run -it -p 5000:5000 -p 7000:7000 --name max-facial-age-estimator codait/max-age-estimation
-
-<!--   
-This part isn't sure yet!!!
-docker run -it -p 5000:5000 -p 7000:7000 --name max-facial-age-estimator codait/max-facial-age-estimator
--->
+    docker run -it -p 5000:5000 -p 7000:7000 --name==max-facial-age-estimator codait/max-age-estimator
 
 Build the web app image by running:
 
@@ -220,7 +215,7 @@ Build the web app image by running:
 
 Run the web app container using:
 
-    docker run --net='container:max-facial-age-estimator' -it max-age-estimation-web-app
+    docker run -it --net='container:max-facial-age-estimator' max-age-estimation-web-app
 
 <!--   
 This part isn't sure yet!!!
