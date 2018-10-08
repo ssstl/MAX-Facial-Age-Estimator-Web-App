@@ -21,4 +21,3 @@ DEBUG = True
 API_TITLE = 'Model Asset Exchange Server'
 API_DESC = 'An API for serving models'
 API_VERSION = '0.1'
-
