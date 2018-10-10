@@ -25,9 +25,11 @@ from io import BytesIO
 from PIL import Image
 try:
     from flask.ext.socketio import SocketIO, emit
-    import Queue as queue
 except ImportError:
     from flask_socketio import SocketIO, emit
+try:
+    import Queue as queue
+except ImportError:
     import queue
 
 monkey.patch_all()
