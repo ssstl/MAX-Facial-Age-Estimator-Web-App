@@ -67,8 +67,6 @@ def gen():
     img_idx = 0
     label_array = [[] for i in range(1)]
     label= ['']
-    CI_flag=False
-
     ini_TK_flag = True
     tracker_failure=False
     init_ZERO_precidt=True
@@ -166,10 +164,7 @@ def gen():
                             label[i]=str(label_a)+ '~' + str(label_b)
                         else:
                             label[i] = str(label_b) + '~' + str(label_a)
-                    #     tmp_label=label[i]
-                    #     CI_flag=True
-                    # if CI_flag==True:
-                    #     label[i]=tmp_label
+
                     if ini_TK_flag is True:
                         # draw label
                         draw_label(img_np_frame, (int(x1), int(y1)), label[i])
