@@ -10,7 +10,7 @@ such as "grouping" which provides the observations in statistics --- different g
 In this Code Pattern we will use one of the models from the
 [Model Asset Exchange (MAX)](https://developer.ibm.com/code/exchanges/models/),
 an exchange where developers can find and experiment with open source deep learning
-models. Specifically we will be using the [Facial Age Estimator](https://github.com/IBM/MAX-Facial-Age-Estimator)
+models. Specifically we will be using the [Facial Age Estimator](https://developer.ibm.com/exchanges/models/all/max-facial-age-estimator/)
 to create a web application that will first detect human faces and then output the ages with the bounding boxes
 of the associated detected faces. The web application provides an user-friendly interface
 backed by a lightweight python server. The server takes webcam as input via the
