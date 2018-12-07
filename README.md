@@ -162,7 +162,8 @@ You can then access the web app at: [`http://localhost:7000`](http://localhost:7
 
 The Facial Age Estimator endpoint must be available at `http://localhost:5000` for the web app to successfully start.
 
-PS: You can start another version of our Web-App, i.e., app_trackerV01.py, designed to adopt object tracking algorithm to reduce the latency. 
+PS: You can also test on our different Web-App version, i.e., app_trackerV01.py, designed to adopt object tracking algorithm to reduce the latency. 
+
 #### 4. Instructions for Docker (Optional)
 
 To run the web app with Docker the containers running the web server and the REST endpoint need to share the same
