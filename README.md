@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App.svg?branch=master)](https://travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App)
+[![Build Status](https://api.travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App.svg?branch=master)](https://travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App)
 
 # Create a web app to show the age estimation from the detected human faces
 
@@ -8,7 +8,7 @@ the facial age estimator model predicts the ages of the detected faces. With the
 such as "grouping" which provides the observations in statistics --- different groups of people for various activities.       
 
 In this Code Pattern we will use one of the models from the
-[Model Asset Exchange (MAX)](https://developer.ibm.com/code/exchanges/models/),
+[Model Asset Exchange (MAX)](https://developer.ibm.com/exchanges/models/),
 an exchange where developers can find and experiment with open source deep learning
 models. Specifically we will be using the [Facial Age Estimator](https://developer.ibm.com/exchanges/models/all/max-facial-age-estimator/)
 to create a web application that will first detect human faces and then output the ages with the bounding boxes
@@ -35,7 +35,7 @@ When the reader has completed this Code Pattern, they will understand how to:
 
 ## Included Components
 
-* [IBM Model Asset Exchange](https://developer.ibm.com/code/exchanges/models/): A place for developers to find and use
+* [IBM Model Asset Exchange](https://developer.ibm.com/exchanges/models/): A place for developers to find and use
 free and open source deep learning models.
 * [Docker](https://www.docker.com): Docker is a tool designed to make it easier to create, deploy, and run applications
 by using containers.
@@ -190,21 +190,21 @@ This will use the model docker container run above and can be run without clonin
 
 # Links
 
-* [Model Asset eXchange (MAX)](https://developer.ibm.com/code/exchanges/models/)
+* [Model Asset eXchange (MAX)](https://developer.ibm.com/exchanges/models/)
 * [Center for Open-Source Data & AI Technologies (CODAIT)](https://developer.ibm.com/code/open/centers/codait/)
 * [MAX Announcement Blog](https://developer.ibm.com/code/2018/03/20/igniting-a-community-around-deep-learning-models-with-model-asset-exchange-max/)
 
 # Learn More
 
 * **Artificial Intelligence Code Patterns**: Enjoyed this Code Pattern? Check out our other
-[Artificial Intelligence Code Patterns](https://developer.ibm.com/code/technologies/artificial-intelligence/)
+[Artificial Intelligence Code Patterns](https://developer.ibm.com/technologies/artificial-intelligence/)
 * **AI and Data Code Pattern Playlist**: Bookmark our
 [playlist](https://www.youtube.com/playlist?list=PLzUbsvIyrNfknNewObx5N7uGZ5FKH0Fde) with all of our Code Pattern videos
-* **Watson Studio**: Master the art of data science with IBM's [Watson Studio](https://dataplatform.ibm.com/)
+* **Watson Studio**: Master the art of data science with IBM's [Watson Studio](https://dataplatform.cloud.ibm.com/)
 * **Deep Learning with Watson Studio**: Design and deploy deep learning models using neural networks, easily scale to
 hundreds of training runs. Learn more at [Deep Learning with Watson Studio](https://www.ibm.com/cloud/deep-learning).
 
 # License
-This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.txt).
+This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
 
-[Apache Software License (ASL) FAQ](http://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
+[Apache Software License (ASL) FAQ](https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
