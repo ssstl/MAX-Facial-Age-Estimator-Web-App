@@ -60,14 +60,14 @@ function WebcamON(e) {
   };
 
 //  navigator.getUserMedia({video: true, audio: false}, function(stream) {
-  navigator.mediaDevices.getUserMedia({ 'audio': false, 'video': true }, video: { width: 240, height: 320 })
+  navigator.mediaDevices.getUserMedia({ audio: false, video: true }, video: { width: 240, height: 320 })
     .then(function(stream) {
         console.log('after getUserMedia');
         video.srcObject = stream;
         mycanvas.height = video.height;
         mycanvas.width = video.width;
       })
-    .catch(function(err) =>{
+    .catch(function(err) {
         console.log('err ' + err);
       });
 
