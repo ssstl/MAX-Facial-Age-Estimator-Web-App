@@ -3,4 +3,4 @@ python:
   - "2.7"
   - "3.6"
 script:
-  - flake8
+  - flake8 . --max-line-length=127

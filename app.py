@@ -14,6 +14,10 @@
 # limitations under the License.
 #
 
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+import queue
 import base64
 import numpy as np
 import requests
@@ -27,15 +31,12 @@ try:
     from flask.ext.socketio import SocketIO, emit
 except ImportError:
     from flask_socketio import SocketIO, emit
-try:
-    import Queue as queue
-except ImportError:
-    import queue
+
 
 monkey.patch_all()
 app = Flask(__name__)
 app.config.from_object('config')
-app.queue = queue.Queue()
+app.queue = queue.Queue(1)  # Keep queue size low to avoid video frame lag
 socketio = SocketIO(app)
 
 
@@ -49,8 +50,31 @@ def draw_label(image, point, label, font=cv2.FONT_HERSHEY_SIMPLEX,
                 (255, 255, 255), thickness)
 
 
+def draw_boxes_and_label(image, label, box, color=(255, 255, 0)):
+    box = [int(n) for n in box]
+    x1, y1, x2, y2 = tuple(box)
+    p1 = (x1, y1)
+    p2 = (x1 + x2, y1 + y2)
+    cv2.rectangle(image, p1, p2, color, 2, 1)
+    draw_label(image, p1, label)
+    return image
+
+
+def draw_FPS(image, fps):
+    cv2.putText(image, "FPS: {}".format("%.4f" % fps), (20, 20),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+
 def base64_to_pil_image(base64_img):
     return Image.open(BytesIO(base64.b64decode(base64_img)))
+
+
+def convert_to_JPEG(np_image_frame):
+    # np_image_color = cv2.cvtColor(np_image_frame, cv2.COLOR_BGR2RGB)
+    image = Image.fromarray(np_image_frame)
+    with BytesIO() as f:
+        image.save(f, format='JPEG')
+        return f.getvalue()
 
 
 @app.route("/")
@@ -71,7 +95,10 @@ def connected():
 
 @socketio.on('streamingvideo', namespace='/streaming')
 def webdata(dta):
-    app.queue.put(dta['data'])
+    try:
+        app.queue.put_nowait(dta['data'])
+    except queue.Full:
+        pass
 
 
 @app.route('/video_feed')
@@ -82,66 +109,83 @@ def video_feed():
 
 
 def gen():
-    skip_frame = 1
-    img_idx = 0
+    TARGET_FPS = 10.0
+    FRAME_TIME_INTERVAL = 1.0 / TARGET_FPS
+    IMAGE_RESOLUTION = 1024
+
+    frames_per_second = 0           # Stores FPS of last frame processed
+    age_results = []
+
+    tracker = cv2.MultiTracker_create()
+    executor = ThreadPoolExecutor(max_workers=1)
+    future = None
 
     while True:
-        input_img = base64_to_pil_image(app.queue.get().split('base64')[-1])
-        input_img.save("t1.jpg")
+        start = time.time()
+        try:
+            input_img = base64_to_pil_image(app.queue.get_nowait().split('base64')[-1])
+        except queue.Empty:
+            input_img = base64_to_pil_image(app.queue.get().split('base64')[-1])
 
-        img_idx += 1
-        if img_idx % skip_frame == 0:
-            img_pil = np.asarray(Image.open('t1.jpg'))
+        img_np_frame = np.array(input_img)
+        img_h, img_w, _ = np.shape(img_np_frame)
+        img_np_frame = cv2.resize(img_np_frame,
+                                  (IMAGE_RESOLUTION, int(IMAGE_RESOLUTION*img_h/img_w)))
+        img_h, img_w, _ = np.shape(img_np_frame)
 
-            img_h, img_w, _ = np.shape(img_pil)
+        if future is None:
+            future = executor.submit(predict_age_local, img_np_frame)
 
-            img_np_frame = img_pil
+        if future.done():
+            predict_results = future.result()
+            bounding_boxes = [entry['face_box'] for entry in predict_results]
+            age_results = [entry['age_estimation'] for entry in predict_results]
+            tracker = update_trackers(img_np_frame, bounding_boxes)
+            color = (0, 0, 255)       # Alternate color to differentiate b/w model or tracker boxes
+            future = executor.submit(predict_age_local, img_np_frame)
 
-            img_np_frame = cv2.resize(img_np_frame,
-                                      (1024, int(1024*img_h/img_w)))
-            img_h, img_w, _ = np.shape(img_np_frame)
-
-            my_files = {'image': open('t1.jpg', 'rb'),
-                        'Content-Type': 'multipart/form-data',
-                        'accept': 'application/json'}
-
-            r = requests.post('http://localhost:5000/model/predict',
-                              files=my_files, json={"key": "value"})
-
-            json_str = json.dumps(r.json())
-            data = json.loads(json_str)
-
-            ret_res = data['predictions']
-
-            if len(data['predictions']) <= 0:
-                cv2.imwrite('t1.jpg', img_np_frame)
-                yield (b'--img_np_frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n'
-                       + open('t1.jpg', 'rb').read() + b'\r\n')
-            else:
-                for i in range(len(ret_res)):
-                    age = ret_res[i]['age_estimation']
-                    bbx = ret_res[i]['face_box']
-
-                    # draw results
-                    x1, y1, w, h = bbx
-                    label = "{}".format(age)
-                    draw_label(img_np_frame, (int(x1), int(y1)), label)
-
-                    x2 = x1 + w
-                    y2 = y1 + h
-                    cv2.rectangle(img_np_frame, (int(x1), int(y1)),
-                                  (int(x2), int(y2)), (0, 255, 255), 2)
-
-            img_np_frame = cv2.cvtColor(img_np_frame, cv2.COLOR_BGR2RGB)
-            cv2.imwrite('t1.jpg', img_np_frame)
-            fh = open("./t1.jpg", "rb")
-            frame = fh.read()
-            fh.close()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         else:
-            continue
+            color = (255, 255, 0)
+
+        # Use CV2 MultiTracker to track faces and pair ages to face
+        success, bounding_boxes = tracker.update(img_np_frame)
+        for i, (box, age) in enumerate(zip(bounding_boxes, age_results)):
+            img_np_frame = draw_boxes_and_label(img_np_frame, str(age), box, color)
+
+        # draw_FPS(img_np_frame, frames_per_second)
+        result_image = convert_to_JPEG(img_np_frame)
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + result_image + b'\r\n')
+
+        loop_process_time = time.time() - start
+        if loop_process_time < FRAME_TIME_INTERVAL:
+            time.sleep(FRAME_TIME_INTERVAL - loop_process_time)
+
+        actual_loop_time = time.time() - start
+        frames_per_second = 1.0 / actual_loop_time
+        print("FPS: " + str(frames_per_second))
+
+
+def predict_age_local(np_image):
+    image = convert_to_JPEG(np_image)
+    my_files = {'image': image,
+                'Content-Type': 'multipart/form-data',
+                'accept': 'application/json'}
+
+    r = requests.post('http://localhost:5000/model/predict',
+                      files=my_files, json={"key": "value"})
+
+    json_str = json.dumps(r.json())
+    data = json.loads(json_str)
+    return data['predictions']
+
+
+def update_trackers(image, bounding_boxes):
+    tracker = cv2.MultiTracker_create()
+    for box in bounding_boxes:
+        tracker.add(cv2.TrackerKCF_create(), image, tuple(box))
+    return tracker
 
 
 if __name__ == "__main__":

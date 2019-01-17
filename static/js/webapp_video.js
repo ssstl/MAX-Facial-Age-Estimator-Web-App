@@ -46,16 +46,30 @@ function initEvents() {
 
 
 function WebcamON(e) {
-  video.height = 240;
-  video.width = 320;
-  navigator.getUserMedia({video: true, audio: false}, function(stream) {
-    video.src = window.URL.createObjectURL(stream);
-    mycanvas.height = video.height;
-    mycanvas.width = video.width;
-  }, function(e) {
-    mycanvas.height = video.height;
-    mycanvas.width = video.width;
-  });
+  video.height = 720;
+  video.width = 1280;
+
+//  setTimeout(function(){
+//    console.log('reload');
+//    window.location.reload();
+//   }, 2000);
+
+    video.onloadedmetadata = function() {
+    console.log('in onloadedmetadata');
+    video.play();
+  };
+
+//  navigator.getUserMedia({video: true, audio: false}, function(stream) {
+  navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1280, height: 720 }})
+    .then(function(stream) {
+        // console.log('after getUserMedia');
+        video.srcObject = stream;
+        mycanvas.height = video.height;
+        mycanvas.width = video.width;
+      })
+    .catch(function(err) {
+        console.log('err ' + err);
+      });
 
    var ctx = mycanvas.getContext('2d');
   socket.emit('netin', { data: 'Run Estimator!' });
@@ -64,9 +78,10 @@ function WebcamON(e) {
     ctx.drawImage(video, 0, 0, mycanvas.width, mycanvas.height);
     socket.emit('streamingvideo', { data: mycanvas.toDataURL('image/jpeg', 0.9) });
   };
-  setInt = setInterval(function(){sendVideoFrame_()}, 1500 / 10);
+//  setInt = setInterval(function(){sendVideoFrame_()}, 1500 / 10);
+  setInt = setInterval(function(){sendVideoFrame_()}, 33);
+
   video.style.display="none";
 //  $('#webcame').style.display="none"
 };
 })(window);
-

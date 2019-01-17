@@ -15,7 +15,7 @@
 #
 
 # Flask settings
-DEBUG = True
+DEBUG = False
 
 # API metadata
 API_TITLE = 'Model Asset Exchange Server'
