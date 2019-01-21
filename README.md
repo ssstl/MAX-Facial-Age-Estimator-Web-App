@@ -1,11 +1,11 @@
-[![Build Status](https://api.travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App.svg?branch=master)](https://travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App)
+[![Build Status](https://travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App.svg?branch=master)](https://travis-ci.org/IBM/MAX-Facial-Age-Estimator-Web-App)
 
 # Create a web app to show the age estimation from the detected human faces
 
-The biological ages of people oftentimes provide a significant information for many applications; for example, surveillance, product recommendation, etc. 
+The biological ages of people oftentimes provide a significant information for many applications; for example, surveillance, product recommendation, etc.
 Existing commercial devices such as mobile phones, webcams are used to create visual data (images/videos) constantly. Given visual data with human faces,
 the facial age estimator model predicts the ages of the detected faces. With the predicted ages, the information can be applied to different algorithms
-such as "grouping" which provides the observations in statistics --- different groups of people for various activities.       
+such as "grouping" which provides the observations in statistics --- different groups of people for various activities.
 
 In this Code Pattern we will use one of the models from the
 [Model Asset Exchange (MAX)](https://developer.ibm.com/exchanges/models/),
@@ -138,7 +138,7 @@ You can also test it on the command line, for example:
 
 Clone the Age Estimation Web App repository locally by running the following command:
 
-    git clone https://github.com/IBM/MAX-Facial-Age-Estimator-Web-App.git
+    git clone https://github.com/IBM/MAX-Facial-Age-Estimator-Web-App
 
 > Note: You may need to `cd ..` out of the MAX-Age-Estimation directory first
 
