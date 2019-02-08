@@ -17,7 +17,6 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-import queue
 import base64
 import numpy as np
 import requests
@@ -31,7 +30,10 @@ try:
     from flask.ext.socketio import SocketIO, emit
 except ImportError:
     from flask_socketio import SocketIO, emit
-
+try:
+    import Queue as queue
+except ImportError:
+    import queue
 
 monkey.patch_all()
 app = Flask(__name__)
@@ -224,7 +226,7 @@ def gen():
         if future is None or future.done():
             future = executor.submit(predict_age_local, img_np_frame)
             last_inference_image = img_np_frame
-            images_since_submit.clear()
+            del images_since_submit[:]
         else:
             images_since_submit.append(img_np_frame)
 
