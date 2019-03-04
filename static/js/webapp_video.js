@@ -17,21 +17,19 @@
 (function(exports) {
 
   ////////////////////////////////////////////////////////////////////////////////
-  // Cross-platform webcam access boilerplate 
-  navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.msGetUserMedia 
+  // Cross-platform webcam access boilerplate
+  navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.msGetUserMedia
     || navigator.getUserMedia || navigator.mozGetUserMedia;
-  exports.requestAnimationFrame = exports.mozRequestAnimationFrame 
-    || exports.webkitRequestAnimationFrame || exports.requestAnimationFrame 
+  exports.requestAnimationFrame = exports.mozRequestAnimationFrame
+    || exports.webkitRequestAnimationFrame || exports.requestAnimationFrame
     || exports.oRequestAnimationFrame || exports.msRequestAnimationFrame;
-  exports.cancelAnimationFrame = exports.mozCancelAnimationFrame 
-    || exports.cancelAnimationFrame || exports.msCancelAnimationFrame 
+  exports.cancelAnimationFrame = exports.mozCancelAnimationFrame
+    || exports.cancelAnimationFrame || exports.msCancelAnimationFrame
     || exports.webkitCancelAnimationFrame || exports.oCancelAnimationFrame;
   exports.URL = exports.URL || exports.webkitURL;
 
-  ////////////////////////////////////////////////////////////////////////////////  
+  ////////////////////////////////////////////////////////////////////////////////
   // Constants
-  const _VIDEO_WIDTH_PX = 1024 
-  const _VIDEO_HEIGHT_PX = 576
   const _JPEG_COMPRESSION = 0.9
   const _TARGET_FPS = 15
   const _FRAME_INTERVAL_MSEC = 1000.0 / _TARGET_FPS
@@ -42,12 +40,21 @@
   const _I = 5.0
   const _D = 0.01
 
-
   ////////////////////////////////////////////////////////////////////////////////
   // Global variables for the handlers below
   initEvents();
   exports.$ = $;
   var ORIGINAL_DOC_TITLE = document.title;
+  var VIDEO_WIDTH_PX = 1024;
+  var VIDEO_HEIGHT_PX = 576;
+  // Change resolution if browser is Safari
+  if (navigator.userAgent.search("Safari") != -1 && navigator.userAgent.search("Chrome") === -1) {
+      VIDEO_WIDTH_PX = 960;
+      VIDEO_HEIGHT_PX = 540;
+  }
+  $("#video_feed").setAttribute("width", VIDEO_WIDTH_PX);
+  $("#video_feed").setAttribute("height", VIDEO_HEIGHT_PX);
+
   var mycanvas = document.createElement('canvas');
   var video = $('video');
   var rafId = null;
@@ -66,9 +73,9 @@
 
   ////////////////////////////////////////////////////////////////////////////////
   // Subroutines
-  
-  /** 
-   * Compute how long to sleep until it's time to send the next frame. 
+
+  /**
+   * Compute how long to sleep until it's time to send the next frame.
    * Uses the following global variables to adjust the delay:
    *   -- lastFrameMsec (timestamp of last frame)
    *   -- integralError (integral of error, with exponential smoothing)
@@ -87,7 +94,7 @@
     // Error is difference between target intra-frame delay and measured
     // delay.
     curError = _FRAME_INTERVAL_MSEC - msecSinceLastFrame
-    integralError = (integralError * _DECAY_FACTOR) 
+    integralError = (integralError * _DECAY_FACTOR)
         + (curError * (1.0 - _DECAY_FACTOR))
     derivError = curError - prevError
     prevError = curError
@@ -113,16 +120,16 @@
 
   /** Handler for the "start webcam" button. */
   function WebcamON(e) {
-    video.height = _VIDEO_HEIGHT_PX;
-    video.width = _VIDEO_WIDTH_PX;
+    video.height = VIDEO_HEIGHT_PX;
+    video.width = VIDEO_WIDTH_PX;
 
     video.onloadedmetadata = function() {
       // console.log('in onloadedmetadata');
       video.play();
     };
 
-    navigator.mediaDevices.getUserMedia({ audio: false, 
-        video: { width: _VIDEO_WIDTH_PX, height: _VIDEO_HEIGHT_PX }})
+    navigator.mediaDevices.getUserMedia({ audio: false,
+        video: { width: VIDEO_WIDTH_PX, height: VIDEO_HEIGHT_PX }})
       .then(function(stream) {
           // console.log('after getUserMedia');
           video.srcObject = stream;
@@ -138,7 +145,7 @@
 
     function sendVideoFrame_() {
       ctx.drawImage(video, 0, 0, mycanvas.width, mycanvas.height);
-      socket.emit('streamingvideo', { data: mycanvas.toDataURL('image/jpeg', 
+      socket.emit('streamingvideo', { data: mycanvas.toDataURL('image/jpeg',
         _JPEG_COMPRESSION) });
       sendFrameCB = setTimeout(function(){sendVideoFrame_()}, msecToNextFrame());
     };
