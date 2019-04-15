@@ -22,18 +22,13 @@ body {
     padding: 1% 2%;
 }
 
-#codait-logo {
-    min-width: 162px;
-    min-height: 150px;
-}
-
-
 #codait-logo img {
+    float: left;
     width: 162px;
     height: 150px;
 }
 
-.title-section h1 {
+.title-section {
     margin-top: 10px;
 }
 
@@ -45,5 +40,17 @@ body {
 
 .ibm-code .btn-primary:hover {
     background-color: #1E8B87;
-    border-color: #24D8B89;
+    border-color: #24D8B8;
+}
+
+#video-content {
+    text-align: center;
+}
+
+#webcam-button {
+    margin-top: 20px;
+}
+
+.hide {
+    display: none;
 }

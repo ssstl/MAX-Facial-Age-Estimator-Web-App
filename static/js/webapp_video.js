@@ -47,16 +47,17 @@
   var ORIGINAL_DOC_TITLE = document.title;
   var VIDEO_WIDTH_PX = 1024;
   var VIDEO_HEIGHT_PX = 576;
+  var webcamOn = false;
   // Change resolution if browser is Safari
   if (navigator.userAgent.search("Safari") != -1 && navigator.userAgent.search("Chrome") === -1) {
       VIDEO_WIDTH_PX = 960;
       VIDEO_HEIGHT_PX = 540;
   }
-  $("#video_feed").setAttribute("width", VIDEO_WIDTH_PX);
-  $("#video_feed").setAttribute("height", VIDEO_HEIGHT_PX);
+  $("#video_feed").attr("width", VIDEO_WIDTH_PX);
+  $("#video_feed").attr("height", VIDEO_HEIGHT_PX);
 
   var mycanvas = document.createElement('canvas');
-  var video = $('video');
+  var video = document.querySelector('video');
   var rafId = null;
 
   // Variables for PID controller
@@ -106,20 +107,22 @@
   ////////////////////////////////////////////////////////////////////////////////
   // Event handlers
 
-  function $(selector) {
-    return document.querySelector(selector) || null;
-  }
   socket.on('connected', function () {
       socket.emit('netin', { data: 'Connected!' });
     });
 
   function initEvents() {
-    $('#webcame').addEventListener('click', WebcamON);
+    $('#webcam-button').click('click', webcamButtonHandler);
   };
 
 
   /** Handler for the "start webcam" button. */
-  function WebcamON(e) {
+  function webcamButtonHandler(e) {
+    // Toggle class
+    $('#webcam-button').toggleClass("btn-primary");
+    $('#webcam-button').toggleClass("btn-danger");
+    $('#video-content').toggleClass("hide");
+
     video.height = VIDEO_HEIGHT_PX;
     video.width = VIDEO_WIDTH_PX;
 
@@ -128,32 +131,48 @@
       video.play();
     };
 
+    if (!webcamOn) {
+      requestWebcam();
+      $('#webcam-button-text').text("Disable Webcam");
+    } else {
+      disableWebcam();
+      $('#webcam-button-text').text("Enable Webcam");
+    }
+  };
+
+  function requestWebcam() {
     navigator.mediaDevices.getUserMedia({ audio: false,
-        video: { width: VIDEO_WIDTH_PX, height: VIDEO_HEIGHT_PX }})
-      .then(function(stream) {
-          // console.log('after getUserMedia');
-          video.srcObject = stream;
-          mycanvas.height = video.height;
-          mycanvas.width = video.width;
-        })
-      .catch(function(err) {
-          console.log('err ' + err);
-        });
+      video: { width: VIDEO_WIDTH_PX, height: VIDEO_HEIGHT_PX }})
+    .then(function(stream) {
+        video.srcObject = stream;
+        mycanvas.height = video.height;
+        mycanvas.width = video.width;
+        webcamOn = true;
+      })
+    .catch(function(err) {
+        console.log('err ' + err);
+      });
 
     var ctx = mycanvas.getContext('2d');
     socket.emit('netin', { data: 'Run Estimator!' });
 
     function sendVideoFrame_() {
-      ctx.drawImage(video, 0, 0, mycanvas.width, mycanvas.height);
-      socket.emit('streamingvideo', { data: mycanvas.toDataURL('image/jpeg',
-        _JPEG_COMPRESSION) });
-      sendFrameCB = setTimeout(function(){sendVideoFrame_()}, msecToNextFrame());
+      if (webcamOn) {
+        ctx.drawImage(video, 0, 0, mycanvas.width, mycanvas.height);
+        socket.emit('streamingvideo', { data: mycanvas.toDataURL('image/jpeg',
+          _JPEG_COMPRESSION) });
+      }
+        sendFrameCB = setTimeout( sendVideoFrame_, msecToNextFrame());
     };
 
     // Use setTimeout(), not setInterval(), to avoid queueing events in the
     // browser.
-    sendFrameCB = setTimeout(function(){sendVideoFrame_()}, 0.0);
+    sendFrameCB = setTimeout( sendVideoFrame_, 0.0);
+  }
 
-    video.style.display="none";
-  };
+  function disableWebcam() {
+    video.srcObject.getTracks()[0].stop();
+    webcamOn = false;
+  }
+
 })(window);

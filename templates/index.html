@@ -16,13 +16,14 @@ limitations under the License.
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
 
     <title>MAX Facial Age Estimator</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="static/favicon.ico"/>
+    <link rel="shortcut icon" type="image/x-icon" href="static/favicon.ico" />
 
     <link rel="stylesheet" href="static/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/css/webapp.css">
@@ -35,49 +36,66 @@ limitations under the License.
 
     <div class="container-fluid ibm-code">
         <div class="row">
-            <div class="col-md-7">
-                <div id="codait-logo" class="col-md-3">
-                    <img src="static/img/codait-logo.jpg"/>
+            <div class="col-md-10">
+                <div id="codait-logo" class="col-md-2">
+                    <img src="static/img/codait-logo.jpg" />
                 </div>
 
-                <div id="codait-logo" class="col-md-3">
-                    <img src="static/img/AgeEstimator.png"/>
+                <div class="col-md-10 title-section">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h1>Model Asset Exchange</h1>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="https://ibm.biz/model-exchange" target="_blank">
+                                <h2>ibm.biz/model-exchange</h2>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h1>Facial Age Estimator</h1>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="https://ibm.biz/guess-my-age" target="_blank">
+                                <h2>ibm.biz/guess-my-age</h2>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-md-4 title-section">
-                    <h1>MAX Facial Age Estimator</h1>
-                    <button id="webcame" class="btn btn-primary select-buttons">Enable Webcam</button>
+                <div class="row">
+                    <div class="col-md-12 hide" id="video-content">
+                        <video style="display:none" autoplay></video>
+                        <img id="video_feed" src="{{ url_for('video_feed') }}">
+                    </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="webcam-button" class="btn btn-primary btn-large btn-block select-buttons">
+                            <span id="webcam-button-text">Enable Webcam</span>
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <video style="display:none" autoplay></video>
-                <img id="video_feed" src="{{ url_for('video_feed') }}">
-            </div>
-        </div>
-
 
         <footer class="footer">
-            <hr/>
+            <hr>
             <p style="float:left">Created at the IBM Center for Open-Source
-            Data and AI Technologies</p>
+                Data and AI Technologies</p>
             <p style="float:right">
                 Source code available on
                 <a href="https://github.com/IBM/MAX-Facial-Age-Estimator-Web-App" target="_blank">GitHub</a>
             </p>
         </footer>
-    </div>
 
-<!-- This page used to download this JS file from a remote server; now we pull
-    a local copy
-<script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
--->
-<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
-<script src="{{ url_for('static', filename='js/webapp_video.js') }}?6.44"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
-<script>CFInstall.check({mode: 'overlay'});</script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/webapp_video.js') }}?6.44"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+        <script>CFInstall.check({ mode: 'overlay' });</script>
 
 </body>
 
