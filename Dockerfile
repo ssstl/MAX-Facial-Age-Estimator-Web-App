@@ -17,7 +17,7 @@
 FROM python:2.7
 
 RUN apt-get update && apt-get install libgtk2.0 -y
-RUN pip install opencv-python
+RUN pip install opencv-python futures
 
 COPY . /app
 WORKDIR /app
