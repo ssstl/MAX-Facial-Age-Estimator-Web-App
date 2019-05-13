@@ -121,12 +121,12 @@ You can also test it on the command line, for example:
       "age_estimation": [
         48
       ],
-      "face_box": [
-        "303",
-        "174",
-        "379",
-        "515"
-      ]
+      "detection_box": [
+                0.3079667063020214,
+                0.147,
+                0.6813317479191439,
+                0.562
+            ]
     }
   ]
 }

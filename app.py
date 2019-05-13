@@ -159,6 +159,7 @@ def gen():
 
         input_img = base64_to_pil_image(img_data.split('base64')[-1])
         raw_img_np_frame = np.array(input_img)
+        img_w, img_h, _ = raw_img_np_frame.shape
 
         # Mirror effect
         raw_img_np_frame = cv2.flip(raw_img_np_frame, 1)
@@ -185,8 +186,10 @@ def gen():
             last_inference_image_ages = age_results
 
             predict_results = future.result()
-            bounding_boxes = [entry['face_box'] for entry in predict_results]
+            bounding_boxes = [entry['detection_box'] for entry in predict_results]
             age_results = [entry['age_estimation'] for entry in predict_results]
+            # scale back to the original bounding box coordinates
+            bounding_boxes = scale_up_norm_bbx(bounding_boxes, img_w, img_h)
 
             # Scale the bounding boxes to the image size we use for tracking.
             bounding_boxes = scale_bounding_boxes(bounding_boxes,
@@ -291,7 +294,7 @@ def draw_boxes_and_label(image, label, box, color=(255, 255, 0)):
     """
     x1, y1, x2, y2 = (int(c) for c in box)
     p1 = (x1, y1)
-    p2 = (x1 + x2, y1 + y2)
+    p2 = (x2, y2)
     cv2.rectangle(image, p1, p2, color, 2, 1)
     draw_label(image, p1, label)
     return image
@@ -386,6 +389,43 @@ def update_trackers(image, bounding_boxes):
         # fewer frames.
         tracker.add(cv2.TrackerMedianFlow_create(), image, tuple(box))
     return tracker
+
+
+def scale_up_norm_bbx(box, img_w, img_h):
+    """
+    Scale up a list of normalized bounding boxes.
+
+    Args:
+        bounding_boxes: List of lists of [y1, x1, y2, x2], where each coordinate is normalized
+         by the height and width of the image dimension for y and x, respectively.
+         Each coordinate is therefore in the range [0, 1].
+        img_w: Width of the original image
+        img_h: Heigh of the original image
+    Returns:
+        A new list of bounding boxes with the original coordinates with the ordering [x1,y1,x2,y2].
+    """
+    try:
+        ret = []
+        # Use a for loop because OpenCV doesn't play well with generators
+        for eachbbox in box:
+            y1, x1, y2, x2 = (c for c in eachbbox)
+            bbox = [x1, y1, x2, y2]
+            new_bbox = []
+            for i in range(len(bbox)):
+                if i == 0:
+                    new_val = bbox[i] * img_h
+                elif i == 1:
+                    new_val = bbox[i] * img_w
+                elif i == 2:
+                    new_val = bbox[i] * img_h
+                elif i == 3:
+                    new_val = bbox[i] * img_w
+                new_bbox.append(new_val)
+            ret.append(new_bbox)
+        return ret
+    except ValueError:
+        print("The first few frames are blank.")
+        return []
 
 
 def scale_bounding_boxes(bounding_boxes, orig_width, new_width):
