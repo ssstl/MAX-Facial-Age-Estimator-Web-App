@@ -1,8 +1,8 @@
-Flask
-flask-socketio
-gevent
-Pillow
-numpy
-requests
-flake8
-opencv-contrib-python
+Flask==1.0.2
+flask-socketio==3.3.1
+gevent==1.4.0
+Pillow==5.4.1
+numpy==1.16.2
+requests==2.21.0
+flake8==3.7.7
+opencv-contrib-python==4.0.0.21

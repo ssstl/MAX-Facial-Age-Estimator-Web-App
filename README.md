@@ -194,11 +194,11 @@ port on the host machine. In the example below it is mapped to port `7000` on th
 
 Build the web app image by running:
 
-    docker build -t max-age-estimator-web-app .
+    docker build -t max-facial-age-estimator-web-app .
 
 Run the web app container using:
 
-    docker run -it --net='container:max-facial-age-estimator' max-age-estimator-web-app
+    docker run -it --net='container:max-facial-age-estimator' max-facial-age-estimator-web-app
 
 ##### Using the Docker Hub Image
 
